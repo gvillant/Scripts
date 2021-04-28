@@ -67,6 +67,12 @@ if ($DisplayDrivers.DriverVersion -eq $DriverVersion)
 
 # Create registry key to disable DC State
 Write-host "Adding registry keys under HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\"
+
+New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" -Force
+New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0001" -Force
+New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0002" -Force
+New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0003" -Force
+New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0004" -Force
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" -Name "EnableDCStateinPSR" -Type "DWord" -Value "00000000" -Force
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" -Name "EnableDC5DC6WA" -Type "DWord" -Value "00000000" -Force
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0001" -Name "EnableDCStateinPSR" -Type "DWord" -Value "00000000" -Force
@@ -76,7 +82,7 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0003" -Name "EnableDCStateinPSR" -Type "DWord" -Value "00000000" -Force
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0003" -Name "EnableDC5DC6WA" -Type "DWord" -Value "00000000" -Force
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0004" -Name "EnableDCStateinPSR" -Type "DWord" -Value "00000000" -Force
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0005" -Name "EnableDC5DC6WA" -Type "DWord" -Value "00000000" -Force
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0004" -Name "EnableDC5DC6WA" -Type "DWord" -Value "00000000" -Force
 
 # Delete Driver
 Write-host "Removing driver with pnputil. Command line is : pnputil.exe /delete-driver `"$($DisplayDrivers.InfName)`" /force"
@@ -85,7 +91,7 @@ Write-host "Removing driver with pnputil. Command line is : pnputil.exe /delete-
 
 # Install Driver igxpin.exe [-b] [-overwrite] [-l<LCID>] [-s] [-report <path>]
 Write-host "Installing new driver. Command line is : igxpin.exe -overwrite -s -report `"$($env:ProgramData)\Dell`""
-& $($installFolder)\Intel-UHD-Graphics-Driver_R8T3C_WIN_27.20.100.9171_A19_01\igxpin.exe -overwrite -s -report `"$($env:ProgramData)\Dell`"
+& "$($installFolder)Intel-UHD-Graphics-Driver_R8T3C_WIN_27.20.100.9171_A19_01\igxpin.exe" -overwrite -s -report `"$($env:ProgramData)\Dell`"
 
 Stop-Transcript
 
