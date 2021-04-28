@@ -37,13 +37,13 @@ $DisplayDrivers | select Description, DeviceName, DriverVersion, DriverDate, Dri
 if ($ComputerModel -ne $ValidModel)
 {
     Write-host "Detected Model is $($ComputerModel) does not match $ValidModel ... exiting script !"
-    exit
+    #exit
 }
 # Check Display driver ProviderName
 if ($DisplayDrivers.DriverProviderName -ne $DriverProviderName)
 {
     Write-host "Detected Display is $($DisplayDrivers.DriverProviderName) does not match $DriverProviderName ... exiting script !"
-    exit
+    #exit
 }
 
 # Check Display drivers count
