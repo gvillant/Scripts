@@ -28,7 +28,7 @@ $DriverProviderName = "Intel Corporation"
 $ComputerModel = (gwmi -class win32_Computersystem).Model
 
 # Get all drivers that have display as deviceclass using WMI
-[array]$DisplayDrivers = gwmi -class win32_PnPSignedDriver | ? { $_.DeviceClass -eq "DISPLAY" }
+[array]$DisplayDrivers = gwmi -class win32_PnPSignedDriver | ? { $_.DeviceClass -eq "DISPLAY" } | ? { $_.DriverProviderName -eq $DriverProviderName }
 
 # Select description and driver's version
 $DisplayDrivers | select Description, DeviceName, DriverVersion, DriverDate, DriverProviderName, InfName, InstallDate, DeviceID
