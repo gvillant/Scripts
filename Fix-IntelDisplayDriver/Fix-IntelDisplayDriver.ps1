@@ -20,21 +20,12 @@ Start-Transcript "$($env:ProgramData)\Dell\Fix-IntelDisplayDriver.log"
 
 # Variables
 $installFolder = "$PSScriptRoot\"
-$DriverVersion = "27.20.100.9171" # Put here the target verion
+$DriverVersion = "27.20.100.9171" # Put here the target version
+$ValidModel = "Latitude 7490"
 $DriverProviderName = "Intel(R) HD Graphics"
 
-# Get DISPLAY drivers with specified version using get-WindowsDriver
-<# $DisplayDrivers = get-windowsdriver -Online | ? { ($_.ClassNAme -eq "DISPLAY") -and ($_.Version -eq $DriverVersion) }
-$DisplayDrivers
-if ($DisplayDrivers.count -eq 1) 
-{
-    Write-host "Found $($DisplayDrivers.Driver) / $($DisplayDrivers.ProviderName) / $($DisplayDrivers.Version) / $($DisplayDrivers.OriginalFileName)"
-} 
-else {
-    Write-host "ERROR - Found $($DisplayDrivers.Count) matching drivers, exiting script"
-}
-
-#>
+# Get Computer Model
+$ComputerModel = (gwmi -class win32_Computersystem).Model
 
 # Get all drivers that have display as deviceclass using WMI
 [array]$DisplayDrivers = gwmi -class win32_PnPSignedDriver | ? { $_.DeviceClass -eq "DISPLAY" }
@@ -42,12 +33,19 @@ else {
 # Select description and driver's version
 $DisplayDrivers | select Description, DeviceName, DriverVersion, DriverDate, DriverProviderName, InfName, InstallDate, DeviceID
 
+# Check Computer Model
+if ($ComputerModel -ne $ValidModel)
+{
+    Write-host "Detected Model is $($ComputerModel) does not match $ValidModel ... exiting script !"
+    exit
+}
 # Check Display driver ProviderName
-if ($DisplayDrivers.DriverProviderName -eq $DriverProviderName)
+if ($DisplayDrivers.DriverProviderName -ne $DriverProviderName)
 {
     Write-host "Detected Display is $($DisplayDrivers.DriverProviderName) does not match $DriverProviderName ... exiting script !"
-    #exit
+    exit
 }
+
 # Check Display drivers count
 if ($DisplayDrivers.count -eq 1) 
 {
