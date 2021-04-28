@@ -22,7 +22,7 @@ Start-Transcript "$($env:ProgramData)\Dell\Fix-IntelDisplayDriver.log"
 $installFolder = "$PSScriptRoot\"
 $DriverVersion = "27.20.100.9171" # Put here the target version
 $ValidModel = "Latitude 7490"
-$DriverProviderName = "Intel(R) HD Graphics"
+$DriverProviderName = "Intel Corporation"
 
 # Get Computer Model
 $ComputerModel = (gwmi -class win32_Computersystem).Model
