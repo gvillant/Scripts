@@ -20,18 +20,20 @@ Start-Transcript "$($env:ProgramData)\Dell\Fix-IntelDisplayDriver.log"
 
 # Variables
 $installFolder = "$PSScriptRoot\"
-$DriverVersion = "27.20.100.9171" # Put here the target version
+$Version = "27.20.100.9171" # Put here the target version
 $ValidModel = "Latitude 7490"
-$DriverProviderName = "Intel Corporation"
+$ProviderName = "Intel Corporation"
 
 # Get Computer Model
 $ComputerModel = (gwmi -class win32_Computersystem).Model
 
 # Get all drivers that have display as deviceclass using WMI
-[array]$DisplayDrivers = gwmi -class win32_PnPSignedDriver | ? { $_.DeviceClass -eq "DISPLAY" } | ? { $_.DriverProviderName -eq $DriverProviderName }
+#[array]$DisplayDrivers = gwmi -class win32_PnPSignedDriver | ? { $_.DeviceClass -eq "DISPLAY" } | ? { $_.DriverProviderName -eq $DriverProviderName }
+[array]$DisplayDrivers = Get-WindowsDriver -online | ? { $_.ClassName -eq "DISPLAY" } | | ? { $_.ProviderName -eq $ProviderName }
 
 # Select description and driver's version
-$DisplayDrivers | select Description, DeviceName, DriverVersion, DriverDate, DriverProviderName, InfName, InstallDate, DeviceID
+#$DisplayDrivers | select Description, DeviceName, DriverVersion, DriverDate, DriverProviderName, InfName, InstallDate, DeviceID
+$DisplayDrivers | select ClassDescription, Version, Date, ProviderName, Driver, ClassGUID, OriginalFileName
 
 # Check Computer Model
 if ($ComputerModel -ne $ValidModel)
@@ -40,16 +42,16 @@ if ($ComputerModel -ne $ValidModel)
     exit
 }
 # Check Display driver ProviderName
-if ($DisplayDrivers.DriverProviderName -ne $DriverProviderName)
+if ($DisplayDrivers.ProviderName -ne $ProviderName)
 {
-    Write-host "Detected Display is $($DisplayDrivers.DriverProviderName) does not match $DriverProviderName ... exiting script !"
+    Write-host "Detected Display is $($DisplayDrivers.ProviderName) does not match $ProviderName ... exiting script !"
     exit
 }
 
 # Check Display drivers count
 if ($DisplayDrivers.count -eq 1) 
 {
-    Write-host "Found $($DisplayDrivers.DeviceName) / $($DisplayDrivers.DriverProviderName) / $($DisplayDrivers.DriverVersion) / $($DisplayDrivers.InfName)"
+    Write-host "Found $($DisplayDrivers.ProviderName) / $($DisplayDrivers.Version) / $($DisplayDrivers.Driver)"
 } 
 else {
     Write-host "ERROR - Found $($DisplayDrivers.Count) matching drivers, exiting script !"
@@ -57,9 +59,9 @@ else {
 }
 
 # Check version
-if ($DisplayDrivers.DriverVersion -eq $DriverVersion)
+if ($DisplayDrivers.Version -eq $Version)
 {
-    Write-host "Already installed driver version $($DisplayDrivers.DriverVersion) matches target driver version $DriverVersion ... exiting script !"
+    Write-host "Already installed driver version $($DisplayDrivers.Version) matches target driver version $Version ... exiting script !"
     exit
 }
 
@@ -83,8 +85,8 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0004" -Name "EnableDC5DC6WA" -Type "DWord" -Value "00000000" -Force
 
 # Delete Driver
-Write-host "Removing driver with pnputil. Command line is : pnputil.exe /delete-driver `"$($DisplayDrivers.InfName)`" /force"
-& pnputil.exe /delete-driver `"$($DisplayDrivers.InfName)`" /force
+Write-host "Removing driver with pnputil. Command line is : pnputil.exe /delete-driver `"$($DisplayDrivers.Driver)`" /force"
+& pnputil.exe /delete-driver `"$($DisplayDrivers.Driver)`" /force
 
 
 # Install Driver igxpin.exe [-b] [-overwrite] [-l<LCID>] [-s] [-report <path>]
