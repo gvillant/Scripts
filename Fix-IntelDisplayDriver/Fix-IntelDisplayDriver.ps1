@@ -29,7 +29,7 @@ $ComputerModel = (gwmi -class win32_Computersystem).Model
 
 # Get all drivers that have display as deviceclass using WMI
 #[array]$DisplayDrivers = gwmi -class win32_PnPSignedDriver | ? { $_.DeviceClass -eq "DISPLAY" } | ? { $_.DriverProviderName -eq $DriverProviderName }
-[array]$DisplayDrivers = Get-WindowsDriver -online | ? { $_.ClassName -eq "DISPLAY" } | | ? { $_.ProviderName -eq $ProviderName }
+[array]$DisplayDrivers = Get-WindowsDriver -online | ? { $_.ClassName -eq "DISPLAY" } | ? { $_.ProviderName -eq $ProviderName }
 
 # Select description and driver's version
 #$DisplayDrivers | select Description, DeviceName, DriverVersion, DriverDate, DriverProviderName, InfName, InstallDate, DeviceID
@@ -85,8 +85,8 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0004" -Name "EnableDC5DC6WA" -Type "DWord" -Value "00000000" -Force
 
 # Delete Driver
-Write-host "Removing driver with pnputil. Command line is : pnputil.exe /delete-driver `"$($DisplayDrivers.Driver)`" /force"
-& pnputil.exe /delete-driver `"$($DisplayDrivers.Driver)`" /force
+Write-host "Removing driver with pnputil. Command line is : pnputil.exe /delete-driver `"$($DisplayDrivers.Driver)`" /uninstall"
+& pnputil.exe /delete-driver `"$($DisplayDrivers.Driver)`" /uninstall
 
 
 # Install Driver igxpin.exe [-b] [-overwrite] [-l<LCID>] [-s] [-report <path>]
