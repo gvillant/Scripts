@@ -39,12 +39,14 @@ $DisplayDrivers | select ClassDescription, Version, Date, ProviderName, Driver, 
 if ($ComputerModel -ne $ValidModel)
 {
     Write-host "Detected Model is $($ComputerModel) does not match $ValidModel ... exiting script !"
+    Stop-Transcript
     exit
 }
 # Check Display driver ProviderName
 if ($DisplayDrivers.ProviderName -ne $ProviderName)
 {
     Write-host "Detected Display is $($DisplayDrivers.ProviderName) does not match $ProviderName ... exiting script !"
+    Stop-Transcript
     exit
 }
 
@@ -55,6 +57,7 @@ if ($DisplayDrivers.count -eq 1)
 } 
 else {
     Write-host "ERROR - Found $($DisplayDrivers.Count) matching drivers, exiting script !"
+    Stop-Transcript
     exit
 }
 
@@ -62,6 +65,7 @@ else {
 if ($DisplayDrivers.Version -eq $Version)
 {
     Write-host "Already installed driver version $($DisplayDrivers.Version) matches target driver version $Version ... exiting script !"
+    Stop-Transcript
     exit
 }
 
@@ -86,12 +90,20 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e
 
 # Delete Driver
 Write-host "Removing driver with pnputil. Command line is : pnputil.exe /delete-driver `"$($DisplayDrivers.Driver)`" /uninstall"
-& pnputil.exe /delete-driver `"$($DisplayDrivers.Driver)`" /uninstall
+& PNPUtil.exe /delete-driver `"$($DisplayDrivers.Driver)`" /uninstall
 
+# Install Driver using pnputil
+$DriversInf = Get-ChildItem "$($installFolder)Intel-UHD-Graphics-Driver_R8T3C_WIN_27.20.100.9171_A19_01\Graphics\" -Recurse -Filter *.inf 
+$DriversInf | ForEach-Object { 
+    Write-host "installing $($_.FullName)"
+    PNPUtil.exe /add-driver $_.FullName /install 
+}
 
-# Install Driver igxpin.exe [-b] [-overwrite] [-l<LCID>] [-s] [-report <path>]
+<#
+# Install Driver using igxpin.exe [-b] [-overwrite] [-l<LCID>] [-s] [-report <path>]
 Write-host "Installing new driver. Command line is : igxpin.exe -overwrite -s -report `"$($env:ProgramData)\Dell`""
 & "$($installFolder)Intel-UHD-Graphics-Driver_R8T3C_WIN_27.20.100.9171_A19_01\igxpin.exe" -overwrite -s -report `"$($env:ProgramData)\Dell`"
+#>
 
 Stop-Transcript
 
