@@ -366,20 +366,23 @@ write-host "Choose SerialNumber " -ForegroundColor Green
 $Global:SerialNumbers = import-Csv -LiteralPath $SerialNumberCSVFile  -Delimiter ";"
 $Global:menuSerial = @{}
 for ($i=1;$i -le $SerialNumbers.count; $i++) 
-{ Write-Host "$i. $($SerialNumbers[$i-1].Serial),$($SerialNumbers[$i-1].Customer),$($SerialNumbers[$i-1].Tenant),$($SerialNumbers[$i-1].OGName)" 
+{ Write-Host "$i. $($SerialNumbers[$i-1].Serial),$($SerialNumbers[$i-1].RegisteredBiosGUID),$($SerialNumbers[$i-1].Customer),$($SerialNumbers[$i-1].Tenant),$($SerialNumbers[$i-1].OGName)" 
 $menuSerial.Add($i,($SerialNumbers[$i-1].Serial))}
-
 [int]$Global:Serial = Read-Host 'Enter selection'
 $Global:SerialSelection = $menuSerial.Item($Serial)
+$Global:RegisteredBiosGUIDSelection = $serialnumbers.RegisteredBiosGUID[$Serial-1]
+write-host "Serial: $SerialSelection `nRegisteredBiosGUIDSelection: $RegisteredBiosGUIDSelection " -ForegroundColor Yellow
 }
 
-function Set-VMSerialAndSnapshot ($VMselection, $SerialSelection) {
+function Set-VMSerialAndSnapshot ($VMselection, $SerialSelection,$RegisteredBiosGUIDSelection) {
 #Set SerialNumber
-write-host -ForegroundColor Cyan $VMselection $SerialSelection
-Set-VMAdvancedSettings -VM $VMselection -BIOSSerialNumber $SerialSelection -ChassisSerialNumber $SerialSelection -BaseBoardSerialNumber $SerialSelection -ChassisAssetTag $SerialSelection -force
+write-host -ForegroundColor Cyan $VMselection $SerialSelection $RegisteredBiosGUIDSelection
+Set-VMAdvancedSettings -VM $VMselection -NewBIOSGUID $RegisteredBiosGUIDSelection -BIOSSerialNumber $SerialSelection -ChassisSerialNumber $SerialSelection -BaseBoardSerialNumber $SerialSelection -ChassisAssetTag $SerialSelection -force
 
 #Build Snapshot name
-$Global:SnapshotName = "3.2.2 / $($SerialNumbers[$Serial-1].Customer) / $($SerialNumbers[$Serial-1].Tenant) / $($SerialNumbers[$Serial-1].Serial) / $($SerialNumbers[$Serial-1].OGName)"
+$Global:SnapshotName = "3.2.2/$($SerialNumbers[$Serial-1].Customer)/$($SerialNumbers[$Serial-1].Tenant)/$($SerialNumbers[$Serial-1].Serial)/$($SerialNumbers[$Serial-1].OGName)/$($SerialNumbers[$Serial-1].RegisteredBiosGUID)"
+#Truncate to 100 char
+$Global:SnapshotName=$Global:SnapshotName[0..99] -join ""
 write-host -ForegroundColor Cyan "SnapshotName: $($SnapshotName)"
 
 #Snapshot
@@ -405,15 +408,15 @@ Invoke-BulkMenu
 if ($Bulk -ne "1") {
     #One serial only
 	Invoke-MenuSerial
-    Set-VMSerialAndSnapshot $VMselection $SerialSelection
+    Set-VMSerialAndSnapshot $VMselection $SerialSelection $RegisteredBiosGUIDSelection
     }
     else {
 		#Bulk mode
 		$SerialNumbers = import-Csv -LiteralPath $SerialNumberCSVFile  -Delimiter ";"
     	$Serial = 1
     	foreach ($SerialNumber in $SerialNumbers) {
-        	write-host "Importing $($SerialNumber.Serial) to VM $($VMSelection)" -ForegroundColor Yellow
-        	Set-VMSerialAndSnapshot $VMselection $($SerialNumber.Serial)
+        	write-host "Importing $($SerialNumber.Serial) / $($SerialNumber.RegisteredBiosGUID) to VM $($VMSelection)" -ForegroundColor Yellow
+        	Set-VMSerialAndSnapshot $VMselection $($SerialNumber.Serial) $($SerialNumber.RegisteredBiosGUID)
         	$Serial++
         }
     }
