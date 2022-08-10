@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Created by VMware Workspace ONE Configuration Tool for Provisioning. API version 19.2.0.0 -->
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+    <settings pass="specialize">
+<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ComputerName>*</ComputerName>
+            <AutoLogon>
+                <Username>workspaceone</Username>
+                <Enabled>true</Enabled>
+                <LogonCount>1</LogonCount>
+				<Password>
+					<Value>VMware.123</Value>
+                </Password>
+            </AutoLogon>
+</component>
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <RunSynchronous>
+<RunSynchronousCommand wcm:action="add">
+    <Description>UnfilterAdminToken</Description>
+    <Path>cmd /c reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v FilterAdministratorToken /t REG_DWORD /d 0 /f</Path>
+    <Order>2</Order>
+</RunSynchronousCommand><RunSynchronousCommand wcm:action="add">
+    <Description>Disable consumer features</Description>
+    <Path>reg add HKLM\Software\Policies\Microsoft\Windows\CloudContent /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f</Path>
+    <Order>3</Order>
+</RunSynchronousCommand>
+<RunSynchronousCommand wcm:action="add">
+	<Description>DISABLE_UAC_EnableLUA</Description>
+	<Path>cmd /c reg ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f</Path>
+	<Order>4</Order>
+</RunSynchronousCommand>
+<RunSynchronousCommand wcm:action="add">
+	<Description>DISABLE_UAC_ConsentPromptBehaviorAdmin</Description>
+	<Path>cmd /c reg ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v ConsentPromptBehaviorAdmin /t REG_DWORD /d 5 /f</Path>
+	<Order>5</Order>
+</RunSynchronousCommand>
+<RunSynchronousCommand wcm:action="add">
+	<Description>DISABLE_UAC_PromptOnSecureDesktop</Description>
+	<Path>cmd /c reg ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v PromptOnSecureDesktop /t REG_DWORD /d 1 /f</Path>
+	<Order>6</Order>
+</RunSynchronousCommand>
+<RunSynchronousCommand wcm:action="add">
+	<Description>WS1 Provisioning Agent Install</Description>
+	<Path>msiexec.exe /i c:\programdata\vmware\AwProvAgent-x64.msi /L*V C:\programdata\vmware\provisioningagent.log</Path>
+	<Order>7</Order>
+</RunSynchronousCommand>
+            </RunSynchronous>
+        </component>
+    </settings>
+    <settings pass="generalize">
+        <component name="Microsoft-Windows-PnpSysprep" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <DoNotCleanUpNonPresentDevices>true</DoNotCleanUpNonPresentDevices>
+            <PersistAllDeviceInstalls>true</PersistAllDeviceInstalls>
+        </component>
+    </settings>
+    <settings pass="oobeSystem">
+        <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <InputLocale>0409:00000409</InputLocale>
+            <SystemLocale>en-US</SystemLocale>
+            <UILanguage>en-US</UILanguage>
+            <UILanguageFallback>en-US</UILanguageFallback>
+            <UserLocale>en-US</UserLocale>
+        </component>
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <UserAccounts>
+			   <LocalAccounts>
+					<LocalAccount wcm:action="add">
+						 <Password>
+							<Value>VMware.123</Value>
+						 </Password>
+						 <Description>Testing</Description>
+						 <DisplayName>WS1 Provisioning Account</DisplayName>
+						 <Group>Administrators</Group>
+						 <Name>workspaceone</Name>
+					</LocalAccount>
+				</LocalAccounts>
+            </UserAccounts>
+<OOBE>
+    <HideEULAPage>True</HideEULAPage>
+    <NetworkLocation>Work</NetworkLocation>
+            <ProtectYourPC>1</ProtectYourPC>
+</OOBE>
+          <FirstLogonCommands>
+			<SynchronousCommand wcm:action="add">
+				<CommandLine>powershell $timeout = new-timespan -Minutes 10; $sw = [diagnostics.stopwatch]::StartNew(); do { $Failed = $false; Try { if( (Invoke-WebRequest -Uri https://prod.esr.vmwservices.com/esr/services/api/platforms/windowspc/oems/any/apps/com.airwatch.workspaceoneunifiedagentbundle/latest?osVersion=10.0.10586 -Headers @{'"Accept"' = '"application/vnd.vmware.esr.get-latest-app-update-v1+json"'} -Method Head).StatusCode -ne '200') {$Failed = $true} } catch { $Failed = $true } finally {start-sleep -seconds 5} } while ($Failed -And $sw.elapsed -lt $timeout)</CommandLine>
+				<Description>Checking for internet connection</Description>
+				<Order>1</Order>
+			</SynchronousCommand>
+			<SynchronousCommand wcm:action="add">
+				<CommandLine>cmd /c msiexec /a C:\ProgramData\VMware\VMwareWS1ProvisioningTool.msi /qb TARGETDIR="C:\ProgramData\VMware\VMwareWS1ProvisioningTool"</CommandLine>
+				<Description>Extracting Provisioning Tool msi</Description>
+				<Order>2</Order>
+			</SynchronousCommand>
+			<SynchronousCommand wcm:action="add">
+				<CommandLine>cmd /c "C:\ProgramData\VMware\VMwareWS1ProvisioningTool\VMwareWS1ProvisioningTool\VMwareWS1ProvisioningTool.exe" -a trackonly --gui --autologin -n workspaceone -w VMware.123</CommandLine>
+				<Description>Executing Provisioning Tool</Description>
+				<Order>3</Order>
+			</SynchronousCommand>
+			<SynchronousCommand wcm:action="add">
+				<CommandLine>reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoLogonCount /t REG_DWORD /d 0 /f</CommandLine>
+				<Description>Resetting autologon count</Description>
+				<Order>4</Order>
+			</SynchronousCommand>
+			<SynchronousCommand wcm:action="add">
+				<CommandLine>cmd /c "del c:\windows\panther\unattend.xml /f /q"</CommandLine>
+				<Description>Deleting the unattend.xml</Description>
+				<Order>5</Order>
+			</SynchronousCommand>
+         </FirstLogonCommands>
+        </component>
+    </settings>
+        <settings pass="offlineServicing">
+            <component name="Microsoft-Windows-LUA-Settings" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <EnableLUA>false</EnableLUA>
+            </component>
+        </settings>
+</unattend>
