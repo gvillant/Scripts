@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<AutoRestore xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <WimFileName>21h2_en_us.wim</WimFileName><!--Name of WIM or SWM file to be restored-->
+  <LocalImageVolumeName>IA_DYNAMIC_DATA</LocalImageVolumeName>
+  <MapNetworkDrives><!--List of network drives to map. -->
+    <MapNetworkDrive><!--Map network drive 1-->
+      <NetworkDrivePath></NetworkDrivePath><!--Map network drive sample where images might be stored-->
+      <UserName></UserName><!--User account to map network drive-->
+      <Password></Password><!--Password for user account-->
+      <NetworkShareType>Images</NetworkShareType><!--Map network drive type either Images or Drivers-->
+    </MapNetworkDrive><!--End map network drive 1-->
+    <MapNetworkDrive><!--Map network drive 2-->
+      <NetworkDrivePath></NetworkDrivePath><!--Map network drive sample where family pack drivers might be stored-->
+      <UserName></UserName><!--User account to map network drive-->
+      <Password></Password><!--Password for user account-->
+      <NetworkShareType>Drivers</NetworkShareType><!--Map network drive type either Images or Drivers-->
+    </MapNetworkDrive><!--End map network drive 2-->
+    <MapNetworkDrive><!--Map network drive 2-->
+      <NetworkDrivePath></NetworkDrivePath><!--Map network drive sample where family pack drivers might be stored-->
+      <UserName></UserName><!--User account to map network drive-->
+      <Password></Password><!--Password for user account-->
+      <NetworkShareType>Drivers</NetworkShareType><!--Map network drive type either Images or Drivers-->
+    </MapNetworkDrive><!--End map network drive 2-->
+    <MapNetworkDrive><!--Map network drive 2-->
+      <NetworkDrivePath></NetworkDrivePath><!--Map network drive sample where family pack drivers might be stored-->
+      <UserName></UserName><!--User account to map network drive-->
+      <Password></Password><!--Password for user account-->
+      <NetworkShareType>Drivers</NetworkShareType><!--Map network drive type either Images or Drivers-->
+    </MapNetworkDrive><!--End map network drive 2-->
+  </MapNetworkDrives><!--End list of network drives to map-->
+  <Disks>
+  <Disk >
+  <AutoRestorePartitions><!--List of partitions to create for restore-->
+    <AutoRestorePartition><!--Partition 1-->
+      <PartitionType>SystemPartition</PartitionType><!--Partition Type-->
+      <PartitionVolumeLabel>System</PartitionVolumeLabel><!--Partition Volume Label-->
+      <PartitionSize>1000</PartitionSize><!--Partition Size-->
+      <PartitionSizeType>Megabytes</PartitionSizeType><!--Partition size format. Megabytes or RestOfDrive or Percentage. RestOfDrive set <PartitionSize>-1</>-->
+    </AutoRestorePartition><!--End Partition 1-->
+    <AutoRestorePartition><!--Partition 3-->
+      <PartitionType>MicrosoftReserved</PartitionType><!--Partition Type-->
+      <PartitionVolumeLabel>MSR</PartitionVolumeLabel><!--Partition Volume Label-->
+      <PartitionSize>16</PartitionSize><!--Partition Size-->
+      <PartitionSizeType>Megabytes</PartitionSizeType><!--Partition size format. Megabytes or RestOfDrive or Percentage. RestOfDrive set <PartitionSize>-1</>-->
+    </AutoRestorePartition><!--End Partition 3-->
+    <AutoRestorePartition><!--Partition 4-->
+      <PartitionType>WindowsPartition</PartitionType><!--Partition Type-->
+      <PartitionVolumeLabel>Windows</PartitionVolumeLabel><!--Partition Volume Label-->
+      <PartitionSizeType>RestOfDrive</PartitionSizeType><!--Partition size format. Megabytes or RestOfDrive or Percentage. RestOfDrive set <PartitionSize>-1</>-->
+    </AutoRestorePartition><!--End Partition 4-->
+    <AutoRestorePartition><!--Partition 5-->
+      <PartitionType>MicrosoftRecovery</PartitionType><!--Partition Type-->
+      <PartitionVolumeLabel>Recovery</PartitionVolumeLabel><!--Partition Volume Label-->
+      <PartitionSize>1000</PartitionSize><!--Partition Size-->
+      <PartitionSizeType>Megabytes</PartitionSizeType><!--Partition size format. Megabytes or RestOfDrive or Percentage. RestOfDrive set <PartitionSize>-1</>-->
+    </AutoRestorePartition><!--End Partition 5-->
+ </AutoRestorePartitions><!--End list of partitions to create for restore-->
+ </Disk>
+ </Disks>
+ <PromptUserBeforeRestore>false</PromptUserBeforeRestore><!--This will show a prompt once booted into PE, but before the process actually kicks off. Set to false to fully automate the restore.-->
+ <AfterRestoreOption>Reboot</AfterRestoreOption><!--Stay, Reboot or Shutdown PE after the restore is completed-->
+</AutoRestore>
