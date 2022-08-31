@@ -6,7 +6,7 @@
                 <RunAsynchronousCommand wcm:action="add">
                     <Description>Auto Start Prov Tool</Description>
                     <Order>1</Order>
-                    <Path>cmd /c c:\windows\panther\ws1\RunPPKGandXML.bat</Path>
+                    <Path>cmd /c c:\windows\panther\WS1\RunPPKGandXML.bat</Path>
                 </RunAsynchronousCommand>
             </RunAsynchronous>
         </component>
