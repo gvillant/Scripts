@@ -2,7 +2,7 @@ Full PDF documentation with images available here : https://github.com/gvillant/
 
 # How to create a USB dongle to restore devices with Dell Ready Image and Workspace One Dropship Offline/Online
 
-VERSION 1.0 (30 August 2022) by Gaetan_villant@dell.com
+VERSION 1.0 (30 August 2022) by Gaetan_villant -at- dell.com
 ```
 This documentation is divided into multiple parts:
 
@@ -19,36 +19,31 @@ This documentation is divided into multiple parts:
 **Explanations** ......................................................................................................................................... 10
 
 References ............................................................................................................................................ 13
-
+```
 # Introduction
 
-```
 There are many reasons why it is necessary to reimage a machine.
 Although it is always possible to use so-called traditional technologies such as MDT or
 ConfgMgr, one of the simplest and most effective methods remains the USB key.
-```
-```
+
 The following procedure is based on the Dell Image Assist tool, as well as generic images
 validated by Dell, called "Ready Images".
 This technique has the advantage of restoring the state of the machine as it left the Dell factory.
 Here are the main features of this method:
-```
+
 - Installation without assistance
 - Injection of hardware drivers and possible support for several models
 - Import PPKG and unattend.xml files for Dropship Offline or Online
 
-```
-Hardware Prerequisites :
-```
+## Hardware Prerequisites :
+
 - One USB key with a minimum size of 32 GB (64GB recommended)
 ** **Note** ** A larger USB might be required. Depends on the count and size of the following files :
 Ready image Windows Wim, Dell Family driver’s pack and Workspace One PPKG provisioning
 package
 - A Dell machine
 
-```
 Approximative time required to build the key, excluding downloading time: 1 hour
-```
 
 # Step 1 : Create the standard Dell USB restore key with Dell Image Assist
 
@@ -67,17 +62,16 @@ Approximative time required to build the key, excluding downloading time: 1 hour
     Save the file.
 4. **Run** the **ImageAssist.exe** (admin rights required)
 
-```
 User Account Control | Click “Yes”
-```
+
 5. **Welcome** to Image Assist
 
 
 6. **Terms** and **Conditions**
 
-```
+
 Scroll the Terms and Conditions | Click “Next”
-```
+
 7. Which type of image do you want to create?
 
 Select “Image Assist Dynamic – (Recommended)” | Click “Next”
@@ -89,19 +83,19 @@ Pre-Installation Dynamic Validation | “Click Next”
 
 9. Welcome to Image Assist Dynamic
 
-```
+
 Select the Gear | Click “Additional Tools”
-```
+
 10. Create USB Drive or ISO File
 
-```
+
 Click “CREATE”
-```
+
 11. Create USB Drive or ISO File
 
-```
+
 Insert your USB Key.
-```
+
 12. Select the USB key previously connected to the system.
     Verify “Bootable USB” is selected | Verify You have selected the correct USB Key
     | Click “CREATE USB”
@@ -120,9 +114,7 @@ This key can reinstall Windows and hardware drivers only. To configure this key 
 Workspace One Dropship Offline/Online, proceed to the next step.
 
 
-# Step 2 : Customize the key to support Dropship Offline with the
-
-# customer’s PPKG and unattend files.
+# Step 2 : Customize the key to support Dropship Offline with the customer’s PPKG and unattend files.
 
 1. **Download the prerequisites files** :
     - Sample files
@@ -240,30 +232,11 @@ The device executes the “Asynchronous command” and starts the script “RunP
 
 # References
 
-```
-VMware Workspace ONE Provisioning Tool
-Release Notes
-```
-```
-https://docs.vmware.com/en/VMware-
-Workspace-ONE-UEM/services/rn/vmware-
-workspace-one-provisioning-tool-release-
-notes/index.html#workspace-one-provisioning-
-tool-v
-Mode (microsoft-windows-deployment-reseal-
-mode)
-```
-```
-https://docs.microsoft.com/en-us/windows-
-hardware/customize/desktop/unattend/microsoft-
-windows-deployment-reseal-mode
-Drop Ship Provisioning: Workspace ONE
-Operational Tutorial
-```
-```
-https://techzone.vmware.com/drop-ship-
-provisioning-workspace-one-operational-tutorial
-Image Assist Support Information https://www.dell.com/support/home/en-
-us/product-support/product/dell-imageassist/docs
-```
+Title | Link
+-|-
+VMware Workspace ONE Provisioning Tool Release Notes | https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/services/rn/vmware-workspace-one-provisioning-tool-release-notes/index.html
+Workspace-one-provisioning-tool-vMode (microsoft-windows-deployment-reseal-mode) | https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-deployment-reseal-mode
+Drop Ship Provisioning: Workspace ONE Operational Tutorial | https://techzone.vmware.com/drop-ship-provisioning-workspace-one-operational-tutorial
+Image Assist Support Information | https://www.dell.com/support/home/en-us/product-support/product/dell-imageassist/docs
+
 
