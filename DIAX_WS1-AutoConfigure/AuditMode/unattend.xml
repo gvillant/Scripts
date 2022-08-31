@@ -18,5 +18,5 @@
             </Reseal>
         </component>
     </settings>
-    <cpi:offlineImage cpi:source="wim:v:/genericimage/1909/1909_en_us_535%20-%20copy.wim#BLANK" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+    <cpi:offlineImage cpi:source="wim:v:/genericimage/Windows.wim#BLANK" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
 </unattend>
